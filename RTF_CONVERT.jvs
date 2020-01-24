@@ -1,0 +1,39 @@
+
+CREATE OR REPLACE AND RESOLVE JAVA SOURCE NAMED RTF_CONVERT AS
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import oracle.sql.BLOB;
+import oracle.sql.CLOB;
+
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.rtf.RTFEditorKit;
+ 
+public class rtf extends Object {
+ 
+ public static CLOB getString(CLOB p_in) throws IOException, BadLocationException, SQLException {
+  try {
+   if (p_in.getAsciiStream() != null) {
+   
+      RTFEditorKit kit = new RTFEditorKit();
+      Document doc = kit.createDefaultDocument();
+      Connection conn = DriverManager.getConnection("jdbc:default:connection:");
+      
+      kit.read(p_in.getCharacterStream(), doc, 0);
+      String text = new String(doc.getText(0, doc.getLength()).getBytes("ISO-8859-1"));
+      CLOB oraClob = CLOB.createTemporary(conn, false, BLOB.DURATION_SESSION);
+      oraClob.setString(1, text);
+ 
+      
+      return oraClob;
+   } else {
+    return null;
+   }
+  } catch (NullPointerException ex) {
+   return null;
+  }
+ }
+  
+}
