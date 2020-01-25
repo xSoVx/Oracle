@@ -45,7 +45,7 @@
 --******************************************
  --- PREPARE TABLE  DDL CODE 
 --******************************************
-             IF NVL(tmp,'1')='1' AND NVL(p_fields_and_types,'1') <>'1' THEN 
+             IF tmp IS NULL AND p_fields_and_types IS NOT NULL  THEN 
              --Prepare ddl statement for table 
                ddl_statment:=CONCAT(ddl_statment,p_tname);                       
                ddl_statment:=CONCAT(ddl_statment,table_suffix);                    
@@ -66,9 +66,8 @@
                       WHEN NO_DATA_FOUND THEN
                                 tmp :=NULL;
                       END;
-
-                    --  CHECK IF CONSTRAN IS EXISTE 
-                        IF NVL(tmp,'1')='1'  AND p_pkey IS NOT NULL THEN
+                      
+                        IF tmp IS NULL AND p_pkey IS NOT NULL THEN
 
                          --Prepare constraint statement for table                                                                                                                                    
                             ddl_statment:=CONCAT(ddl_statment,' , CONSTRAINT ');                
@@ -81,7 +80,7 @@
 
                         END IF;                            
                    END IF;
-                            ddl_statment:=CONCAT(ddl_statment,' )');                        -- CLOSE FIELDS DDL AREA
+                            ddl_statment:=CONCAT(ddl_statment,' )');
 
 --********************************************
  --- PREPARE SEQUENCE DDL CODE  
@@ -101,7 +100,7 @@
 
 
                                    --   IF CONSTRAN EXISTE ,Create DDL statment else use available 
-                                    IF NVL(tmp,'1')='1'     THEN 
+                                    IF tmp IS NULL     THEN 
                                         --Prepare sequence statement based on table ID                    
                                        sequence_statment:=CONCAT(sequence_statment,p_tname);                 
                                        sequence_statment:=CONCAT(sequence_statment,table_suffix);             
