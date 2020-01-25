@@ -2,7 +2,7 @@
       AS
     --##########################################################################################################################--
 
-    -- Description:          This procedure caretes a table if not exist
+    -- Description:          This procedure caretes a new table
     -- Parameters:         p_tname  = Table name varchar
     --                                ,p_fileds_and_types= ecsepts fields name and data type with comma delimiter .
     --                                ,p_pkey = primary key constraint field name with comma delimiter .
@@ -38,14 +38,14 @@
                              INTO tmp
                            FROM ALL_TABLES t
                         WHERE t.TABLE_NAME =p_tname||table_suffix;
-                EXCEPTION
+                        EXCEPTION
                               WHEN NO_DATA_FOUND THEN
                                 tmp :=NULL;
-                     END;
+                    END;
 --******************************************
  --- PREPARE TABLE  DDL CODE 
 --******************************************
-             IF NVL(tmp,'1')='1'   AND NVL(p_fields_and_types,'1') <>'1' THEN 
+             IF NVL(tmp,'1')='1' AND NVL(p_fields_and_types,'1') <>'1' THEN 
              --Prepare ddl statement for table 
                ddl_statment:=CONCAT(ddl_statment,p_tname);                       
                ddl_statment:=CONCAT(ddl_statment,table_suffix);                    
@@ -62,7 +62,7 @@
                                  INTO tmp
                               FROM ALL_CONSTRAINTS t
                             WHERE t.CONSTRAINT_NAME =p_tname || table_suffix ||const_suffix;
-                    EXCEPTION
+                       EXCEPTION
                       WHEN NO_DATA_FOUND THEN
                                 tmp :=NULL;
                       END;
